@@ -6,7 +6,7 @@ namespace RemoveDuplicates
     {
         private static void Main(string[] args)
         {
-            if (args.Length > 1)
+            if (args.Length != 1)
             {
                 Console.WriteLine("Incorrect number of arguments!");
                 Console.WriteLine("Usage: remove_duplicates.exe <input string>");
