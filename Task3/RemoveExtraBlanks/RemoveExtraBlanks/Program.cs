@@ -30,18 +30,23 @@ namespace RemoveExtraBlanks
             return 0;
         }
 
-        public static void RemoveExtraBlanksInStream(StreamReader source, StreamWriter destination)
+        private static void RemoveExtraBlanksInStream(StreamReader source, StreamWriter destination)
         {
             string line;
             while ((line = source.ReadLine()) != null)
             {
-                var formattedLine = RemoveExcessSpaces(line);
+                var formattedLine = RemoveExcessSeparators(line);
                 destination.WriteLine(formattedLine);
             }
             destination.Flush();
         }
 
-        public static string RemoveExcessSpaces(string str)
+        /// <summary>
+        /// Removes repeating spaces (' ') and tabs ('\t')
+        /// </summary>
+        /// <param name="str">string to process</param>
+        /// <returns>processed string</returns>
+        public static string RemoveExcessSeparators(string str)
         {
             var trimmed = str.Trim();
 
