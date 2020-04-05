@@ -12,7 +12,7 @@ namespace CheckIdentifierTests
         [TestCase("123abc")]
         [TestCase("helloworld")]
         [TestCase("q1w2e3r4")]
-        public void AllIdentifiers_Match_Rule(string sample)
+        public void Identifier_Matches_Rule(string sample)
         {
             Assert.True(SemanticRule.MatchesRule(sample));
         }
@@ -22,13 +22,13 @@ namespace CheckIdentifierTests
         [TestCase("///")]
         [TestCase("abc123.4")]
         [TestCase("0+1")]
-        public void AllIdentifiers_DontMatch_Rule(string sample)
+        public void Identifier_DoesntMatch_Rule(string sample)
         {
             Assert.False(SemanticRule.MatchesRule(sample));
         }
 
         [Test]
-        public void NullIdentifiers_ThrowNullRefException()
+        public void NullIdentifier_ThrowsException()
         {
             Assert.Throws<NullReferenceException>(() =>
             {
