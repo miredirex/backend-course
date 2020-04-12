@@ -9,7 +9,7 @@ namespace PasswordStrengthTests
         [Test]
         public void EmptyPassword_ShouldReturn_ZeroStrength()
         {
-            Assert.True(PasswordAnalyzer.Analyze("") == 0);
+            Assert.AreEqual(0, PasswordAnalyzer.Analyze(""));
         }
         
         /**
@@ -29,14 +29,14 @@ namespace PasswordStrengthTests
         [TestCase("a1a", (4 * 3) + (1 * 4) + (0) + ((3 - 2) * 2) - 0 - 0 - 1)]
         public void Analyze_ShouldCalculate_CorrectPasswordStrength(string password, int expectedStrength)
         {
-            Assert.AreEqual(PasswordAnalyzer.Analyze(password), expectedStrength);
+            Assert.AreEqual(expectedStrength, PasswordAnalyzer.Analyze(password));
         }
         
         [TestCase("ExamplePassword123" /* Length: 18 */, (4 * 18) + (3 * 4) + ((18 - 2) * 2) + ((18 - 13) * 2) - 0 - 0 - 2)]
         [TestCase("AnotherAbCdEaA990" /* Length: 17 */, (4 * 17) + (3 * 4) + ((17 - 5) * 2) + ((17 - 9) * 2) - 0 - 0 - 3)]
         public void Analyze_ShouldCalculate_CorrectPasswordStrengthForLongPasswords(string password, int expectedStrength)
         {
-            Assert.AreEqual(PasswordAnalyzer.Analyze(password), expectedStrength);
+            Assert.AreEqual(expectedStrength, PasswordAnalyzer.Analyze(password));
         }
 
         [TestCase("passwordWithAn_Underscore")]
@@ -61,7 +61,7 @@ namespace PasswordStrengthTests
             {
                 var meta = PasswordAnalyzer.ExtractPasswordMetadata(password);
                 
-                Assert.AreEqual(meta.UppercaseLettersCount, password.Length);
+                Assert.AreEqual(password.Length, meta.UppercaseLettersCount);
             }
             
             [TestCase("lowercasedpassword")]
@@ -72,7 +72,7 @@ namespace PasswordStrengthTests
 
                 Assert.IsTrue(meta.IsOnlyConsistsOfLetters);
                 
-                Assert.AreEqual(meta.LowercaseLettersCount, password.Length);
+                Assert.AreEqual(password.Length, meta.LowercaseLettersCount);
             }
 
             [TestCase("123123123")]
@@ -83,7 +83,7 @@ namespace PasswordStrengthTests
 
                 Assert.IsTrue(meta.IsOnlyConsistsOfDigits);
                 
-                Assert.AreEqual(meta.NumbersCount, password.Length);
+                Assert.AreEqual(password.Length, meta.NumbersCount);
             }
 
             [TestCase("11111111111111")]
@@ -94,7 +94,7 @@ namespace PasswordStrengthTests
             {
                 var meta = PasswordAnalyzer.ExtractPasswordMetadata(password);
                 
-                Assert.AreEqual(meta.RepeatingCharsCount, password.Length - 1);
+                Assert.AreEqual(password.Length - 1, meta.RepeatingCharsCount);
             }
 
             [TestCase("11111111111a11")]
@@ -105,7 +105,7 @@ namespace PasswordStrengthTests
             {
                 var meta = PasswordAnalyzer.ExtractPasswordMetadata(password);
                 
-                Assert.AreNotEqual(meta.RepeatingCharsCount, password.Length - 1);
+                Assert.AreNotEqual(password.Length - 1, meta.RepeatingCharsCount);
             }
         }
     }
