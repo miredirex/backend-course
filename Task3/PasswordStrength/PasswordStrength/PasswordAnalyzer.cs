@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace PasswordStrength
 {
@@ -75,6 +76,13 @@ namespace PasswordStrength
                 if (repeatingChars.Contains(c))
                 {
                     meta.RepeatingCharsCount++;
+                    
+                    // If the current character is met the second time, add +1 to count once
+                    var occurrences = repeatingChars.Count(chr => (c == chr));
+                    if (occurrences == 1)
+                    {
+                        meta.RepeatingCharsCount++;
+                    }
                 }
 
                 repeatingChars += c;

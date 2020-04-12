@@ -25,15 +25,15 @@ namespace PasswordStrengthTests
         
         [TestCase("a",   (4 * 1) + (0 * 4) + (0) + ((1 - 1) * 2) - 1 - 0 - 0)]
         [TestCase("abc", (4 * 3) + (0 * 4) + (0) + ((3 - 3) * 2) - 3 - 0 - 0)]
-        [TestCase("AAA", (4 * 3) + (0 * 4) + ((3 - 3) * 2) + (0) - 3 - 0 - 2)]
-        [TestCase("a1a", (4 * 3) + (1 * 4) + (0) + ((3 - 2) * 2) - 0 - 0 - 1)]
+        [TestCase("AAA", (4 * 3) + (0 * 4) + ((3 - 3) * 2) + (0) - 3 - 0 - 3)]
+        [TestCase("a1a", (4 * 3) + (1 * 4) + (0) + ((3 - 2) * 2) - 0 - 0 - 2)]
         public void Analyze_ShouldCalculate_CorrectPasswordStrength(string password, int expectedStrength)
         {
             Assert.AreEqual(expectedStrength, PasswordAnalyzer.Analyze(password));
         }
         
-        [TestCase("ExamplePassword123" /* Length: 18 */, (4 * 18) + (3 * 4) + ((18 - 2) * 2) + ((18 - 13) * 2) - 0 - 0 - 2)]
-        [TestCase("AnotherAbCdEaA990" /* Length: 17 */, (4 * 17) + (3 * 4) + ((17 - 5) * 2) + ((17 - 9) * 2) - 0 - 0 - 3)]
+        [TestCase("ExamplePassword123" /* Length: 18 */, (4 * 18) + (3 * 4) + ((18 - 2) * 2) + ((18 - 13) * 2) - 0 - 0 - 4)]
+        [TestCase("AnotherAbCdEaA990" /* Length: 17 */, (4 * 17) + (3 * 4) + ((17 - 5) * 2) + ((17 - 9) * 2) - 0 - 0 - 5)]
         public void Analyze_ShouldCalculate_CorrectPasswordStrengthForLongPasswords(string password, int expectedStrength)
         {
             Assert.AreEqual(expectedStrength, PasswordAnalyzer.Analyze(password));
@@ -90,22 +90,14 @@ namespace PasswordStrengthTests
             [TestCase("aaaaaaaaaaaaaaa")]
             [TestCase("AAAAAAAAAA")]
             [TestCase("ZZZZZZZZZZ")]
-            public void ExtractPasswordMetadata_RepeatingCharsCount_ShouldEqualToLengthMinusOne(string password)
-            {
-                var meta = PasswordAnalyzer.ExtractPasswordMetadata(password);
-                
-                Assert.AreEqual(password.Length - 1, meta.RepeatingCharsCount);
-            }
-
-            [TestCase("11111111111a11")]
             [TestCase("aaaaAAAAAAAAA")]
             [TestCase("xxxxXXXXXXXX")]
             [TestCase("XXXXXXXxx")]
-            public void ExtractPasswordMetadata_RepeatingCharsCount_ShouldNotEqualToLengthMinusOne(string password)
+            public void ExtractPasswordMetadata_RepeatingCharsCount_ShouldEqualToLength(string password)
             {
                 var meta = PasswordAnalyzer.ExtractPasswordMetadata(password);
                 
-                Assert.AreNotEqual(password.Length - 1, meta.RepeatingCharsCount);
+                Assert.AreEqual(password.Length, meta.RepeatingCharsCount);
             }
         }
     }
