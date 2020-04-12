@@ -1,27 +1,43 @@
-﻿﻿using System;
+﻿using System.Linq;
 
 namespace CheckIdentifier
 {
     public static class SemanticRule
     {
-        public static bool MatchesRule(string str, bool isLogError = false)
+        public struct MatchResult
         {
-            if (str == null)
+            public bool HasPassed { get; }
+            public string FailMessage { get; }
+
+            public MatchResult(bool hasPassed, string failMessage)
             {
-                throw new NullReferenceException("Parameter 'str' can't be null");
+                HasPassed = hasPassed;
+                FailMessage = failMessage;
             }
-            
-            foreach (char c in str) if (!char.IsLetterOrDigit(c))
+        }
+
+        public static MatchResult MatchesRule(string str)
+        {
+            if (string.IsNullOrEmpty(str))
             {
-                if (isLogError)
+                return new MatchResult(false, "Provided string is empty");
+            }
+
+            for (var i = 0; i < str.Length; i++)
+            {
+                if (!char.IsLetterOrDigit(str[i]))
                 {
-                    Console.WriteLine($"{str} does not match SR3 rule. \"{c}\" is not a digit or letter.");
+                    return new MatchResult(false,
+                        $"{str} does not match SR3 rule. \"{str[i]}\" is not a digit or letter.");
                 }
 
-                return false;
+                if (i == 0 && !char.IsLetter(str.First()))
+                {
+                    return new MatchResult(false, $"Identifier must start with a letter: {str[i]} is not a letter.");
+                }
             }
 
-            return true;
+            return new MatchResult(true, string.Empty);
         }
     }
 }

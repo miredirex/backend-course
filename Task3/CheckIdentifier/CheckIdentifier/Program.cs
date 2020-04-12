@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 
 namespace CheckIdentifier
 {
@@ -13,9 +13,13 @@ namespace CheckIdentifier
             }
 
             var identifier = args[0];
-            var isIdentifierMatches = SemanticRule.MatchesRule(identifier, isLogError: true);
-            
-            Console.WriteLine(isIdentifierMatches ? "Yes" : "No");
+            SemanticRule.MatchResult identifierMatch = SemanticRule.MatchesRule(identifier);
+
+            Console.WriteLine(identifierMatch.HasPassed ? "Yes" : "No");
+            if (!identifierMatch.HasPassed)
+            {
+                Console.WriteLine(identifierMatch.FailMessage);
+            }
         }
     }
 }
