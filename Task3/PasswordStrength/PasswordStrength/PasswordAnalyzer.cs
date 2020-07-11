@@ -5,6 +5,18 @@ namespace PasswordStrength
 {
     public static class PasswordAnalyzer
     {
+        
+        public struct PasswordMetadata
+        {
+            public int NumbersCount;
+            public int UppercaseLettersCount;
+            public int LowercaseLettersCount;
+            public int RepeatingCharsCount;
+
+            public bool IsOnlyConsistsOfLetters;
+            public bool IsOnlyConsistsOfDigits;
+        }
+        
         public static int Analyze(string password)
         {
             var len = password.Length;
@@ -12,36 +24,59 @@ namespace PasswordStrength
 
             var meta = ExtractPasswordMetadata(password);
 
-            strength = strength
-                       + 4 * len
-                       + 4 * meta.NumbersCount
-                       - meta.RepeatingCharsCount;
-
-            if (meta.UppercaseLettersCount > 0)
-            {
-                strength += (len - meta.UppercaseLettersCount) * 2;
-            }
-
-            if (meta.LowercaseLettersCount > 0)
-            {
-                strength += (len - meta.LowercaseLettersCount) * 2;
-            }
-
-            if (meta.IsOnlyConsistsOfLetters) strength -= len;
-            if (meta.IsOnlyConsistsOfDigits) strength -= len;
+            strength = CalculateStrengthByLength(len)
+                     + CalculateStrengthByNumberCount(meta)
+                     + CalculateStrengthByRepeatingChars(meta)
+                     + CalculateStrengthByUppercaseLetters(meta, len)
+                     + CalculateStrengthByLowercaseLetters(meta, len)
+                     + CalculateStrengthByCharConsistency(meta, len);
 
             return strength;
         }
-        
-        public struct PasswordMetadata
-        {
-            public int NumbersCount { get; set; }
-            public int UppercaseLettersCount { get; set; }
-            public int LowercaseLettersCount { get; set; }
-            public int RepeatingCharsCount { get; set; }
 
-            public bool IsOnlyConsistsOfLetters { get; set; }
-            public bool IsOnlyConsistsOfDigits { get; set; }
+        private static int CalculateStrengthByLength(int length)
+        {
+            return 4 * length;
+        }
+
+        private static int CalculateStrengthByNumberCount(PasswordMetadata meta)
+        {
+            return 4 * meta.NumbersCount;
+        }
+
+        private static int CalculateStrengthByRepeatingChars(PasswordMetadata meta)
+        {
+            return -meta.RepeatingCharsCount;
+        }
+
+        private static int CalculateStrengthByUppercaseLetters(PasswordMetadata meta, int length)
+        {
+            if (meta.UppercaseLettersCount > 0)
+            {
+                return (length - meta.UppercaseLettersCount) * 2;
+            }
+
+            return 0;
+        }
+        
+        private static int CalculateStrengthByLowercaseLetters(PasswordMetadata meta, int length)
+        {
+            if (meta.LowercaseLettersCount > 0)
+            {
+                return (length - meta.LowercaseLettersCount) * 2;
+            }
+
+            return 0;
+        }
+
+        private static int CalculateStrengthByCharConsistency(PasswordMetadata meta, int length)
+        {
+            var value = 0;
+            
+            if (meta.IsOnlyConsistsOfLetters) value -= length;
+            if (meta.IsOnlyConsistsOfDigits) value -= length;
+            
+            return value;
         }
 
         public static PasswordMetadata ExtractPasswordMetadata(string password)
